@@ -1,6 +1,6 @@
 # RL
 
-Reinforcement learning implementations built from scratch, for learning purposes.
+Reinforcement learning is pretty much an ocean. I see that when we ultimately reach training world models, reinforcement learning would definitely push our bums back! So, I feel that a deeper understanding of RL algorithms is possible when we go incrementally, step by step, and understand them by acknowledging their use in toy environments like a 2 cross 2 or a 4 cross 4 grids with minimal actions! 
 
 ## Contents
 
