@@ -85,7 +85,13 @@ for state in env.observation_space:
 non_terminal_states = [s for s in env.observation_space if s != env.goal_state]
 policy_import = {state: max(Q[state], key=Q[state].get) for state in non_terminal_states}
 
-print("\n===== Final policy =====")
-print("State".ljust(10) + "Action".rjust(12))
-for state, action in policy_import.items():
-    print(str(state).ljust(10) + env.ACTION_NAMES[action].rjust(12))
+print("\n===== Policy grid (row = i, column = j) =====")
+header = "".ljust(6) + "".join(f"col {j}".rjust(10) for j in range(env.cols))
+print(header)
+for i in range(env.rows):
+    row = f"row {i}".ljust(6)
+    for j in range(env.cols):
+        state = (i, j)
+        cell = "GOAL" if state == env.goal_state else env.ACTION_NAMES[policy_import[state]]
+        row += cell.rjust(10)
+    print(row)

@@ -52,7 +52,12 @@ def state_appeared_before(episode, t):
     return False
 
 
-print("Policy:", policy)
+print("===== Policy grid being evaluated (row = i, column = j) =====")
+header = "".ljust(6) + "".join(f"col {j}".rjust(10) for j in range(env.cols))
+print(header)
+for i in range(env.rows):
+    row = f"row {i}".ljust(6) + "".join(f"{env.ACTION_NAMES[policy[(i, j)]]:>10}" for j in range(env.cols))
+    print(row)
 
 for episode_number in range(NUM_EPISODES):
     episode = generate_episode(env, policy)   # full (state, action, reward) list
@@ -73,6 +78,10 @@ for episode_number in range(NUM_EPISODES):
         print(f"Episode {episode_number + 1}/{NUM_EPISODES} done")
 
 #This is not just V, but V^π(state)
-#The value of state using the policy π 
-for state in V:
-    print(state, V[state])
+#The value of state using the policy π
+print("\n===== V^pi(state) table (row = i, column = j) =====")
+header = "".ljust(6) + "".join(f"col {j}".rjust(10) for j in range(env.cols))
+print(header)
+for i in range(env.rows):
+    row = f"row {i}".ljust(6) + "".join(f"{V[(i, j)]:>10.3f}" for j in range(env.cols))
+    print(row)

@@ -62,4 +62,15 @@ while not is_stable:
 policy_import = policy_dict
 
 if __name__ == "__main__":
-    print(policy_dict)
+    print("\n===== V table (row = i, column = j) =====")
+    header = "".ljust(6) + "".join(f"col {j}".rjust(10) for j in range(env.cols))
+    print(header)
+    for i in range(env.rows):
+        row = f"row {i}".ljust(6) + "".join(f"{V[i][j]:>10.3f}" for j in range(env.cols))
+        print(row)
+
+    print("\n===== Policy grid (row = i, column = j) =====")
+    print(header)
+    for i in range(env.rows):
+        row = f"row {i}".ljust(6) + "".join(f"{env.ACTION_NAMES[policy_dict[(i, j)]]:>10}" for j in range(env.cols))
+        print(row)

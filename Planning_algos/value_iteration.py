@@ -76,5 +76,9 @@ if __name__ == "__main__":
     print("\n" + "=" * 40)
     print("OPTIMAL POLICY")
     print("=" * 40)
-    for state, action in policy_dict.items():
-        print(f"STATE {state!s:<8} ->  ACTION {env.ACTION_NAMES[action]}")
+    print("\n===== Policy grid (row = i, column = j) =====")
+    header = "".ljust(6) + "".join(f"col {j}".rjust(10) for j in range(env.cols))
+    print(header)
+    for i in range(env.rows):
+        row = f"row {i}".ljust(6) + "".join(f"{env.ACTION_NAMES[policy_dict[(i, j)]]:>10}" for j in range(env.cols))
+        print(row)
