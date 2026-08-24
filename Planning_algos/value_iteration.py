@@ -21,9 +21,11 @@ np.set_printoptions(precision=2, suppress=True, floatmode="fixed")
 
 #VALUE ITERATION
 iterations = 10
-print("=" * 40)
-print(f"TRAINING STARTS WITH {iterations} ITERATIONS")
-print("=" * 40)
+if __name__ == "__main__":
+    print("=" * 40)
+    print(f"TRAINING STARTS WITH {iterations} ITERATIONS")
+    print("=" * 40)
+
 for iters in range(iterations):
     for state in states:
         i,j = state
@@ -38,12 +40,14 @@ for iters in range(iterations):
 
         V[i][j] = max(action_values)
 
-    print(f"\n--- Iteration {iters + 1:>2} ---")
-    print(V)
+    if __name__ == "__main__":
+        print(f"\n--- Iteration {iters + 1:>2} ---")
+        print(V)
 
-print("\n" + "=" * 40)
-print("VALUE TABLE CONVERGED")
-print("=" * 40)
+if __name__ == "__main__":
+    print("\n" + "=" * 40)
+    print("VALUE TABLE CONVERGED")
+    print("=" * 40)
 
 policy_dict = {}
 
@@ -64,12 +68,13 @@ for state in states:
 
     policy_dict[state] = best_action
 
-print("\n" + "=" * 40)
-print("OPTIMAL POLICY")
-print("=" * 40)
-for state, action in policy_dict.items():
-    print(f"STATE {state!s:<8} ->  ACTION {env.ACTION_NAMES[action]}")
-
 # Final policy, exposed so other algorithms (e.g. Monte-Carlo prediction) can
 # import it and evaluate it against their own value estimates.
 policy_import = policy_dict
+
+if __name__ == "__main__":
+    print("\n" + "=" * 40)
+    print("OPTIMAL POLICY")
+    print("=" * 40)
+    for state, action in policy_dict.items():
+        print(f"STATE {state!s:<8} ->  ACTION {env.ACTION_NAMES[action]}")

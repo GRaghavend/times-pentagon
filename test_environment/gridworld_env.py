@@ -4,9 +4,13 @@ Two interfaces are exposed on the same class so both families of algorithm can
 share one environment:
 
 - Model-based (Planning Algos: value/policy iteration): the transition
-  function is known and queried directly via `simulate(state, action)`.
+  function is known and queried directly via `simulate(state, action)`. This
+  interface always stays deterministic, `is_slippery` or not, so Planning_algos
+  keeps solving the exact toy MDP it was written for.
 - Model-free, Gym-style (Monte-Carlo, TD, SARSA, Q-learning): only experience
-  is available via `reset()` / `step(action)`.
+  is available via `reset()` / `step(action)`. This interface is the one that
+  respects `is_slippery` — it's what makes a training run built on hundreds of
+  sampled episodes actually encounter stochastic outcomes.
 
 Keeping both on one class means every algorithm trains/evaluates on the exact
 same states, actions, and rewards, so their results (e.g. a policy learned by
@@ -20,14 +24,24 @@ class GridWorldEnv:
     # Actions: 0 = right, 1 = down, 2 = left, 3 = up.
     ACTION_NAMES = {0: "RIGHT", 1: "DOWN", 2: "LEFT", 3: "UP"}
 
+    # For each action, the two actions perpendicular to it — the directions a
+    # slippery step can slide into instead of the intended one (never backward).
+    PERPENDICULAR_ACTIONS = {0: (1, 3), 1: (0, 2), 2: (1, 3), 3: (0, 2)}
+
     def __init__(self, rows=4, cols=4, start_state=(0, 0), goal_state=(3, 3),
-                 step_reward=-1, goal_reward=10):
+                 step_reward=-1, goal_reward=10, is_slippery=False, slip_prob=0.8):
         self.rows = rows
         self.cols = cols
         self.start_state = start_state
         self.goal_state = goal_state
         self.step_reward = step_reward
         self.goal_reward = goal_reward
+
+        # step() only: with probability slip_prob the intended action happens,
+        # the remaining probability is split evenly between the two directions
+        # perpendicular to it (classic FrozenLake-style "ice").
+        self.is_slippery = is_slippery
+        self.slip_prob = slip_prob
 
         self.action_space = [0, 1, 2, 3]
         self.observation_space = self.get_all_states()
@@ -70,9 +84,22 @@ class GridWorldEnv:
         self.state = rng.choice(non_terminal_states)
         return self.state
 
+    def _resolve_slip(self, action):
+        """Which action actually happens once the ice has its say."""
+        if not self.is_slippery:
+            return action
+
+        perp_a, perp_b = self.PERPENDICULAR_ACTIONS[action]
+        remaining = (1.0 - self.slip_prob) / 2
+        return random.choices(
+            [action, perp_a, perp_b],
+            weights=[self.slip_prob, remaining, remaining],
+        )[0]
+
     def step(self, action):
-        next_state, reward = self.simulate(self.state, action)
+        actual_action = self._resolve_slip(action)
+        next_state, reward = self.simulate(self.state, actual_action)
         terminated = next_state == self.goal_state
         truncated = False
         self.state = next_state
-        return next_state, reward, terminated, truncated, {}
+        return next_state, reward, terminated, truncated, {"intended_action": action, "actual_action": actual_action}

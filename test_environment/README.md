@@ -19,6 +19,14 @@ env = GridWorldEnv()
 
 Import it with the repo root on `sys.path` (each script does this itself, see any file under `Planning_algos/` or `Monte-Carlo/` for the pattern).
 
+## Stochasticity (`is_slippery`)
+
+`GridWorldEnv(is_slippery=True)` makes `step()` "icy", FrozenLake-style: the intended action happens with probability `slip_prob` (default `0.8`), and the remaining probability is split evenly between the two actions perpendicular to it (e.g. intending RIGHT, you might slide UP or DOWN instead — never backward). Walls still clamp movement at the grid edges regardless of which direction you actually slid.
+
+This only affects `step()`/`reset()`/`reset_random()` — `simulate(state, action)` always stays deterministic, on purpose: `Planning_algos/` needs a known transition function to compute the Bellman update, so it keeps solving the exact deterministic MDP it was written for, unaffected by `is_slippery`. `is_slippery=True` is meant for the sampling-based methods (`Monte-Carlo/`, and TD/SARSA/Q-learning once added), where hundreds/thousands of sampled episodes can actually surface the stochastic outcomes — with `NUM_EPISODES` in the single digits (like `MC-pred.py`/`MC-control.py`'s current demo runs), you likely won't see a slip at all; it needs a longer run to show up.
+
+Default is `is_slippery=False`, so existing scripts are unaffected unless they opt in.
+
 ## Why one env file
 
 Every algorithm training/evaluating on the exact same states, actions, and rewards is what makes their results comparable — e.g. the value estimates MC-Prediction produces for a policy can be checked against the ground-truth values Value Iteration computed for that same policy, and later, MC-Prediction vs. TD-Prediction on the same policy.

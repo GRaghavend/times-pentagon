@@ -47,7 +47,8 @@ while not is_stable:
             new_state, reward = env.simulate(state,action)
             ni,nj = new_state
             curr_action_value = reward + gamma * V[ni][nj]
-
+            
+            # checking for policy improvement     
             if curr_action_value > best_value:
                 best_action = action
                 best_value = curr_action_value
@@ -56,8 +57,9 @@ while not is_stable:
         if best_action != old_action:
             is_stable = False
 
-print(policy_dict)
-
 # Final policy, exposed so other algorithms (e.g. Monte-Carlo prediction) can
 # import it and evaluate it against their own value estimates.
 policy_import = policy_dict
+
+if __name__ == "__main__":
+    print(policy_dict)

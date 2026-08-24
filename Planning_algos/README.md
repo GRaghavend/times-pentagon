@@ -1,4 +1,11 @@
 # Planning Algorithms
+There are two algorithms called Value Iteration and Policy Iteration. And for heaven's sake they look so same. So I was just wondering what's that factor that stands out distinguishing both race of planning algos. 
+
+Value Iteration can be drawn parallel to ML's training mechanism right? Say we train the model and keep it and then use the model to test. That's the very crux of VI too. Where the V table is the trained model and we dictate a policy from that by choosing the max policy 
+
+Policy iteration is pretty simple. We first initialize a random policy. Then take actions based ONLY on it and simulate in the env. Once that is done, we check for scope of improvement. 
+We go back to the env, try all other actions in that state, and check if the action has changed from the initialized action, if it's changed, then policy hasn't converged. 
+
 
 Dynamic-programming solutions to the shared 4x4 grid-world in [`test_environment/`](../test_environment/README.md), where the transition function is known and given explicitly (unlike the model-free methods in `Monte-Carlo/`, `DQN/`, and `A2C/`).
 

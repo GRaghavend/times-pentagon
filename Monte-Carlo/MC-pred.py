@@ -9,7 +9,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from test_environment.gridworld_env import GridWorldEnv
 from Planning_algos.value_iteration import policy_import
 
-env = GridWorldEnv()
+env = GridWorldEnv(is_slippery=True)
 
 # ---- Q3: policy pi -> plain dict, state -> action ----
 # MC-Prediction EVALUATES this, it does not learn/change it.
@@ -37,7 +37,10 @@ def generate_episode(env, policy):
 # ---- Q1: G(t) -> a single running scalar, NOT a list ----
 # It gets recomputed (overwritten) once per backward step of one episode:
 GAMMA = 0.9
-NUM_EPISODES = 10
+# is_slippery needs far more episodes than the deterministic case to actually
+# surface stochastic outcomes often enough for the returns to average out
+# (see test_environment/README.md's note on is_slippery).
+NUM_EPISODES = 1000
 
 # Checks the first-visit condition: does this state already appear
 # earlier in this same episode (any time step before t)?
@@ -53,7 +56,6 @@ print("Policy:", policy)
 
 for episode_number in range(NUM_EPISODES):
     episode = generate_episode(env, policy)   # full (state, action, reward) list
-    print(f"Episode {episode_number + 1} start state: {episode[0][0]}")
 
     G = 0   # running return, reset at the start of every episode
 
@@ -67,9 +69,10 @@ for episode_number in range(NUM_EPISODES):
             returns[state].append(G)                          # store this return
             V[state] = sum(returns[state]) / len(returns[state])   # average all returns seen so far
 
-    print(f"Episode {episode_number + 1} end value estimates: {V}")
-    print(f"===========================================================================================")
-    print('\n')
+    if (episode_number + 1) % 100 == 0:
+        print(f"Episode {episode_number + 1}/{NUM_EPISODES} done")
 
+#This is not just V, but V^π(state)
+#The value of state using the policy π 
 for state in V:
     print(state, V[state])
