@@ -7,7 +7,9 @@ Reinforcement learning is pretty much an ocean. I see that when we ultimately re
 - [`test_environment/`](test_environment/README.md) — the shared 4x4 grid-world (`GridWorldEnv`) used by every tabular algorithm below, so their results are directly comparable.
 - [`Planning_algos/`](Planning_algos/README.md) — Value Iteration and Policy Iteration (known-transition dynamic programming, no learning involved).
 - [`Monte-Carlo/`](Monte-Carlo/README.md) — Monte-Carlo Prediction (model-free, learns from sampled episodes). Monte-Carlo control is not implemented yet.
-- TD-Prediction, SARSA, and Q-learning are planned but not implemented yet.
+- [`TD/`](TD/README.md) — TD(0) Prediction, SARSA, and Q-learning (model-free, bootstrapped one-step updates).
+- [`REINFORCE/`](REINFORCE/README.md) — vanilla policy-gradient REINFORCE on a two-armed bandit, fully traced.
+- [`PPO/`](PPO/README.md) — Proximal Policy Optimization (actor-critic, clipped surrogate loss) on a cliff grid-world, fully traced.
 - [`DQN/`](DQN/README.md) — Deep Q-Network (CartPole-v1, FlappyBird-v0), with a `main.py` CLI (train/eval modes), replay buffer, and target-network sync.
 - [`A2C/`](A2C/README.md) — Advantage Actor-Critic on CartPole-v1.
 
